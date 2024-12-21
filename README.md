@@ -1,2 +1,1 @@
 # SortingEfficiencyAnalyzer
-# Author: Philopater
