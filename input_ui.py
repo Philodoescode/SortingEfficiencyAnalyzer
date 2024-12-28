@@ -22,8 +22,8 @@ class InputUI:
         self.show_page(0)
 
     def create_pages(self):
-        self.create_input_page()
         self.create_comparison_page()
+        self.create_input_page()
 
     def toggle_input_mode(self):
         """Toggles visibility of CSV input and array creation frames."""
@@ -92,8 +92,11 @@ class InputUI:
 
         self.toggle_input_mode()
 
-        next_button = tk.Button(frame, text="Next", command=lambda: self.show_page(1))
-        next_button.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+        back_button = tk.Button(frame, text="Back", command=lambda: self.show_page(0))
+        back_button.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+
+        run_button = tk.Button(frame, text="Run", command=self.run)
+        run_button.grid(row=3, column=1, padx=10, pady=10, sticky="e")
 
 
     def create_comparison_page(self):
@@ -111,9 +114,9 @@ class InputUI:
         double_algo_radio.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 
         algorithm_list = [
-            "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort", 
-            "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort", 
-            "Bubble Sort", "Cocktail Shaker Sort", "Counting Sort", 
+            "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort",
+            "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort",
+            "Bubble Sort", "Cocktail Shaker Sort", "Counting Sort",
             "Bucket Sort", "Radix Sort", "Gravity Sort (Bead Sort)"
         ]
 
@@ -124,18 +127,15 @@ class InputUI:
         self.sorting_menu_1 = ttk.Combobox(frame, textvariable=self.sorting_var_1, values=algorithm_list, state="readonly")
         self.sorting_menu_1.grid(row=3, column=1, padx=10, pady=5, sticky="w")
 
-        self.sorting_label_2 = tk.Label(frame, text="Algorithm 2:")  # Save this reference
+        self.sorting_label_2 = tk.Label(frame, text="Algorithm 2:")
         self.sorting_label_2.grid(row=4, column=0, padx=10, pady=5, sticky="w")
 
         self.sorting_var_2 = tk.StringVar(value="Merge Sort")
-        self.sorting_menu_2 = ttk.Combobox(frame, textvariable=self.sorting_var_2, values=algorithm_list, state="readonly")  # Save this reference
+        self.sorting_menu_2 = ttk.Combobox(frame, textvariable=self.sorting_var_2, values=algorithm_list, state="readonly")
         self.sorting_menu_2.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        back_button = tk.Button(frame, text="Back", command=lambda: self.show_page(0))
-        back_button.grid(row=5, column=0, padx=10, pady=10, sticky="w")
-
-        run_button = tk.Button(frame, text="Run", command=self.run)
-        run_button.grid(row=5, column=1, padx=10, pady=10, sticky="e")
+        next_button = tk.Button(frame, text="Next", command=lambda: self.show_page(1))
+        next_button.grid(row=5, column=1, padx=10, pady=10, sticky="e")
 
         self.sorting_var_1.trace_add("write", self.ensure_different_algorithms)
         self.sorting_var_2.trace_add("write", self.ensure_different_algorithms)
