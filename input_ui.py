@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from input_handler import InputHandler
-
-
+import SortingAlgorithms
+import random
 class InputUI:
     def __init__(self, root):
         self.root = root
@@ -205,19 +205,98 @@ class InputUI:
 
             try:
                 self.array = input_handler.generate_array(size, shuffle_type, input_type)
-                messagebox.showinfo("Success", f"Generated array: {self.array}")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to generate array: {e}")
 
-        self.sorting_algorithm_1 = self.sorting_var_1.get()
-        self.sorting_algorithm_2 = self.sorting_var_2.get()
+        if self.compare_mode_var.get() == "single":
+            self.sorting_algorithm_1 = self.sorting_var_1.get()
+            sizes, steps_selected, steps_worst = self.perform_single_comparison()
+            self.show_graph_gui_single(sizes, steps_selected, steps_worst)
+        elif self.compare_mode_var.get() == "double":
+            self.sorting_algorithm_1 = self.sorting_var_1.get()
+            self.sorting_algorithm_2 = self.sorting_var_2.get()
+            sizes1, steps1, sizes2, steps2 = self.perform_algorithm_comparison()
+            self.show_graph_gui(sizes1, steps1, sizes2, steps2)
 
-        print("Run Summary:")
-        print(f"Array: {self.array}")
-        print(f"Comparison Mode: {self.compare_mode_var.get()}")
-        print(f"Sorting Algorithm 1: {self.sorting_algorithm_1}")
-        if self.compare_mode_var.get() == "double":
-            print(f"Sorting Algorithm 2: {self.sorting_algorithm_2}")
+    def perform_single_comparison(self):
+        sizes = []
+        steps_selected = []
+        steps_worst = []
+        input_handler = InputHandler()
+        shuffle_type = self.shuffle_var.get()
+        input_type = self.input_type_var.get()
+
+        for i in range(10, self.size_var.get() + 1, 5):
+            # Selected shuffle type
+            sizes.append(i)
+            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            SortingAlgorithms.SortingAlgorithms.step_counter = 0
+            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            steps_selected.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+
+            # Worst-case scenario (reverse sorted array)
+            worst_array = list(range(i, 0, -1))
+            SortingAlgorithms.SortingAlgorithms.step_counter = 0
+            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(worst_array)
+            steps_worst.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+
+        return sizes, steps_selected, steps_worst
+
+    def perform_algorithm_comparison(self):
+        sizes1, steps1 = [], []
+        sizes2, steps2 = [], []
+        input_handler = InputHandler()
+        shuffle_type = self.shuffle_var.get()
+        input_type = self.input_type_var.get()
+
+        for i in range(10, self.size_var.get() + 1, 5):
+            # Algorithm 1
+            sizes1.append(i)
+            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            SortingAlgorithms.SortingAlgorithms.step_counter = 0
+            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            steps1.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+
+            # Algorithm 2
+            sizes2.append(i)
+            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            SortingAlgorithms.SortingAlgorithms.step_counter = 0
+            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(random_array)
+            steps2.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+
+        return sizes1, steps1, sizes2, steps2
+
+    def show_graph_gui(self, sizes1, steps1, sizes2, steps2):
+        # Save the graph using graphDesigner
+        import graphDesigner  # Ensure graphDesigner.py is in the same directory or correctly referenced
+        graphDesigner.plot_steps_comparison(sizes1, steps1, sizes2, steps2,
+                                            label1=self.sorting_algorithm_1,
+                                            label2=self.sorting_algorithm_2)
+
+        # Display the graph in a new window using graphGUI
+        import graphGUI  # Ensure graphGUI.py is in the same directory or correctly referenced
+        new_window = tk.Toplevel(self.root)
+        graphGUI.GraphPlaceholderApp(new_window, sizes1, steps1, sizes2, steps2,
+                                     label1=self.sorting_algorithm_1,
+                                     label2=self.sorting_algorithm_2)
+
+    def show_graph_gui_single(self, sizes, steps_selected, steps_worst):
+        # Save the graph using graphDesigner
+        import graphDesigner  # Ensure graphDesigner.py is in the same directory or correctly referenced
+        graphDesigner.plot_steps_comparison(
+            sizes, steps_selected, sizes, steps_worst,
+            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
+            label2=f"{self.sorting_algorithm_1} (Worst Case)"
+        )
+
+        # Display the graph in a new window using graphGUI
+        import graphGUI  # Ensure graphGUI.py is in the same directory or correctly referenced
+        new_window = tk.Toplevel(self.root)
+        graphGUI.GraphPlaceholderApp(
+            new_window, sizes, steps_selected, sizes, steps_worst,
+            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
+            label2=f"{self.sorting_algorithm_1} (Worst Case)"
+        )
 
 
     def show_page(self, page_index):
