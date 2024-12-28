@@ -229,9 +229,9 @@ class InputUI:
         for i in range(10, self.size_var.get() + 1, 5):
             # Selected shuffle type
             sizes.append(i)
-            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            temp_array = self.array[0:i]
             sorting_algorithms.SortingAlgorithms.step_counter = 0
-            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(temp_array)
             steps_selected.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
             # Worst-case scenario (reverse sorted array)
@@ -252,16 +252,16 @@ class InputUI:
         for i in range(10, self.size_var.get() + 1, 5):
             # Algorithm 1
             sizes1.append(i)
-            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            temp_array = self.array[0:i]
             sorting_algorithms.SortingAlgorithms.step_counter = 0
-            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(temp_array)
             steps1.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
             # Algorithm 2
             sizes2.append(i)
-            random_array = input_handler.generate_array(i, shuffle_type, input_type)
+            temp_array = self.array[0:i]
             sorting_algorithms.SortingAlgorithms.step_counter = 0
-            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(random_array)
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(temp_array)
             steps2.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
         return sizes1, steps1, sizes2, steps2
@@ -286,7 +286,7 @@ class InputUI:
         graphDesigner.plot_steps_comparison(
             sizes, steps_selected, sizes, steps_worst,
             label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
-            label2=f"{self.sorting_algorithm_1} (Worst Case)"
+            label2=f"{self.sorting_algorithm_1} (reverse order)"
         )
 
         # Display the graph in a new window using graphGUI
@@ -295,7 +295,7 @@ class InputUI:
         graphGUI.GraphPlaceholderApp(
             new_window, sizes, steps_selected, sizes, steps_worst,
             label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
-            label2=f"{self.sorting_algorithm_1} (Worst Case)"
+            label2=f"{self.sorting_algorithm_1} (reverse order)"
         )
 
 

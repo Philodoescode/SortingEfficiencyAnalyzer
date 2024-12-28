@@ -1,32 +1,14 @@
-import graphDesigner
-import SortingAlgorithms
+import csv
 import random
-sizes1 =[]
-steps1 =[]
 
-sizes2 =[]
-steps2 =[]
-for i in range(5, 1001, 5):
-    sizes1.append(i)
-    # Generate a randomly sorted array of size i
-    random_array = random.sample(range(1, i + 1), i)
+# Function to generate a CSV file with a randomly sorted array
+def generate_random_array_csv(filename, size):
+    random_array = random.sample(range(1, size + 1), size)
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(random_array)
+    return filename
 
-    # Reset step counter for each sorting operation
-    SortingAlgorithms.SortingAlgorithms.step_counter = 0
-
-    # Perform sorting
-    SortingAlgorithms.SortingAlgorithms.heap_sort(random_array)
-    steps1.append(SortingAlgorithms.SortingAlgorithms.step_counter)
-for i in range(5, 1001, 5):
-    sizes2.append(i)
-    # Generate a randomly sorted array of size i
-    random_array = random.sample(range(1, i + 1), i)
-
-    # Reset step counter for each sorting operation
-    SortingAlgorithms.SortingAlgorithms.step_counter = 0
-
-    # Perform sorting
-    SortingAlgorithms.SortingAlgorithms.insertion_sort(random_array)
-    steps2.append(SortingAlgorithms.SortingAlgorithms.step_counter)
-
-graphDesigner.plot_steps_comparison(sizes1, steps1,sizes2, steps2, "heap sort", "insertion sort")
+# Generate a CSV file with a randomly sorted array of size 100
+csv_file = generate_random_array_csv("random_array.csv", 100)
+csv_file
