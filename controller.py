@@ -1,6 +1,6 @@
 import csv
 import random
-import SortingAlgorithms
+import sorting_algorithms
 class Controller:
     def __init__(self):
         self.array = []
@@ -41,18 +41,18 @@ class Controller:
             raise ValueError("Array is empty. Please load or generate an array first.")
         
         algorithms = {
-            "Merge Sort": SortingAlgorithms.merge_sort,
-            "Shell Sort": SortingAlgorithms.shell_sort,
-            "Selection Sort": SortingAlgorithms.selection_sort,
-            "Insertion Sort": SortingAlgorithms.insertion_sort,
-            "Heap Sort": SortingAlgorithms.heap_sort,
-            "Gravity Sort": SortingAlgorithms.gravity_sort,
-            "Bubble Sort": SortingAlgorithms.bubble_sort,
-            "Cocktail Shaker Sort": SortingAlgorithms.cocktail_shaker_sort,
-            "Counting Sort": SortingAlgorithms.counting_sort,
-            "Radix Sort": SortingAlgorithms.radix_sort,
-            "Gnome Sort": SortingAlgorithms.gnome_sort,
-            "Odd-Even Sort": SortingAlgorithms.odd_even_sort,
+            "Merge Sort": sorting_algorithms.SortingAlgorithms.merge_sort,
+            "Shell Sort": sorting_algorithms.SortingAlgorithms.shell_sort,
+            "Selection Sort": sorting_algorithms.SortingAlgorithms.selection_sort,
+            "Insertion Sort": sorting_algorithms.SortingAlgorithms.insertion_sort,
+            "Heap Sort": sorting_algorithms.SortingAlgorithms.heap_sort,
+            "Gravity Sort": sorting_algorithms.SortingAlgorithms.gravity_sort,
+            "Bubble Sort": sorting_algorithms.SortingAlgorithms.bubble_sort,
+            "Cocktail Shaker Sort": sorting_algorithms.SortingAlgorithms.cocktail_shaker_sort,
+            "Counting Sort": sorting_algorithms.SortingAlgorithms.counting_sort,
+            "Radix Sort": sorting_algorithms.SortingAlgorithms.radix_sort,
+            "Gnome Sort": sorting_algorithms.SortingAlgorithms.gnome_sort,
+            "Odd-Even Sort": sorting_algorithms.SortingAlgorithms.odd_even_sort,
         }
 
         algorithm = algorithms.get(algorithm_name)
@@ -60,14 +60,14 @@ class Controller:
             raise ValueError(f"Algorithm '{algorithm_name}' not recognized.")
 
         # Reset metrics and sort
-        SortingAlgorithms.metrics.reset()
+        sorting_algorithms.Metrics.reset()
         algorithm(self.array)
 
         # Output the sorted array and metrics
         print(f"Sorted Array using {algorithm_name}: {self.array}")
         print("Metrics:")
-        print(f"Time Taken: {SortingAlgorithms.metrics.time_taken:.6f} seconds")
-        print(f"Comparisons: {SortingAlgorithms.metrics.comparisons}")
-        print(f"Swaps: {SortingAlgorithms.metrics.swaps}")
-        print(f"Main Writes: {SortingAlgorithms.metrics.main_writes}")
-        print(f"Auxiliary Writes: {SortingAlgorithms.metrics.aux_writes}")
+        print(f"Time Taken: {sorting_algorithms.Metrics.time_taken:.6f} seconds")
+        print(f"Comparisons: {sorting_algorithms.Metrics.comparisons}")
+        print(f"Swaps: {sorting_algorithms.Metrics.swaps}")
+        print(f"Main Writes: {sorting_algorithms.Metrics.main_writes}")
+        print(f"Auxiliary Writes: {sorting_algorithms.Metrics.aux_writes}")
