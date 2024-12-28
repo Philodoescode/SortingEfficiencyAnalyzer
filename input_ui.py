@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from input_handler import InputHandler
+from controller import Controller
 
 
 class InputUI:
@@ -183,7 +183,7 @@ class InputUI:
             messagebox.showwarning("Warning", "Algorithms cannot be the same.")
 
     def run(self):
-        input_handler = InputHandler()
+        input_handler = Controller()
 
         if self.compare_mode_var.get() == "double" and self.sorting_var_1.get() == self.sorting_var_2.get():
             messagebox.showerror("Error", "Please select two different sorting algorithms.")
