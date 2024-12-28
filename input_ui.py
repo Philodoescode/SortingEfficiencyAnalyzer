@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from input_handler import InputHandler
-import SortingAlgorithms
+from controller import Controller
+import sorting_algorithms
 import random
 class InputUI:
     def __init__(self, root):
@@ -173,9 +173,9 @@ class InputUI:
     def ensure_different_algorithms(self, *args):
         if self.sorting_var_1.get() == self.sorting_var_2.get():
             available_algorithms = [
-                "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort", 
-                "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort", 
-                "Bubble Sort", "Cocktail Shaker Sort", "Counting Sort", 
+                "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort",
+                "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort",
+                "Bubble Sort", "Cocktail Shaker Sort", "Counting Sort",
                 "Bucket Sort", "Radix Sort", "Gravity Sort (Bead Sort)"
             ]
             available_algorithms.remove(self.sorting_var_1.get())
@@ -183,7 +183,7 @@ class InputUI:
             messagebox.showwarning("Warning", "Algorithms cannot be the same.")
 
     def run(self):
-        input_handler = InputHandler()
+        input_handler = Controller()
 
         if self.compare_mode_var.get() == "double" and self.sorting_var_1.get() == self.sorting_var_2.get():
             messagebox.showerror("Error", "Please select two different sorting algorithms.")
@@ -222,7 +222,7 @@ class InputUI:
         sizes = []
         steps_selected = []
         steps_worst = []
-        input_handler = InputHandler()
+        input_handler = Controller()
         shuffle_type = self.shuffle_var.get()
         input_type = self.input_type_var.get()
 
@@ -230,22 +230,22 @@ class InputUI:
             # Selected shuffle type
             sizes.append(i)
             random_array = input_handler.generate_array(i, shuffle_type, input_type)
-            SortingAlgorithms.SortingAlgorithms.step_counter = 0
-            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
-            steps_selected.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+            sorting_algorithms.SortingAlgorithms.step_counter = 0
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            steps_selected.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
             # Worst-case scenario (reverse sorted array)
             worst_array = list(range(i, 0, -1))
-            SortingAlgorithms.SortingAlgorithms.step_counter = 0
-            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(worst_array)
-            steps_worst.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+            sorting_algorithms.SortingAlgorithms.step_counter = 0
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(worst_array)
+            steps_worst.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
         return sizes, steps_selected, steps_worst
 
     def perform_algorithm_comparison(self):
         sizes1, steps1 = [], []
         sizes2, steps2 = [], []
-        input_handler = InputHandler()
+        input_handler = Controller()
         shuffle_type = self.shuffle_var.get()
         input_type = self.input_type_var.get()
 
@@ -253,16 +253,16 @@ class InputUI:
             # Algorithm 1
             sizes1.append(i)
             random_array = input_handler.generate_array(i, shuffle_type, input_type)
-            SortingAlgorithms.SortingAlgorithms.step_counter = 0
-            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
-            steps1.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+            sorting_algorithms.SortingAlgorithms.step_counter = 0
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(random_array)
+            steps1.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
             # Algorithm 2
             sizes2.append(i)
             random_array = input_handler.generate_array(i, shuffle_type, input_type)
-            SortingAlgorithms.SortingAlgorithms.step_counter = 0
-            getattr(SortingAlgorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(random_array)
-            steps2.append(SortingAlgorithms.SortingAlgorithms.step_counter)
+            sorting_algorithms.SortingAlgorithms.step_counter = 0
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(random_array)
+            steps2.append(sorting_algorithms.SortingAlgorithms.step_counter)
 
         return sizes1, steps1, sizes2, steps2
 
