@@ -5,18 +5,20 @@ import sorting_algorithms
 class Controller:
     def __init__(self):
         self.array = []
-        self.metrics = sorting_algorithms.Metrics()  # Instance of Metrics
+    #     self.metrics = sorting_algorithms.Metrics()  # Instance of Metrics
+    #
+    # def load_csv(self, file_path):
+    #     """Loads array data from a CSV file."""
+    #     if not file_path.endswith('.csv'):
+    #         raise ValueError("Invalid file type. Please select a CSV file.")
+    #     with open(file_path, 'r') as file:
+    #         reader = csv.reader(file)
+    #         self.array = []
+    #         for row in reader:
+    #             self.array.extend(map(int, row))
+    #     return self.array
 
-    def load_csv(self, file_path):
-        """Loads array data from a CSV file."""
-        if not file_path.endswith('.csv'):
-            raise ValueError("Invalid file type. Please select a CSV file.")
-        with open(file_path, 'r') as file:
-            reader = csv.reader(file)
-            self.array = []
-            for row in reader:
-                self.array.extend(map(int, row))
-        return self.array
+
 
     def generate_array(self, size, shuffle_type, input_type):
         """Generates an array based on input specifications."""
@@ -33,10 +35,26 @@ class Controller:
             array[split_point:] = array[split_point:][::-1]
         elif shuffle_type == "Fully-sorted":
             array.sort()
+        elif shuffle_type == "Randomized":
+            random.shuffle(array)
 
         self.array = array
         return array
 
+
+    def load_csv(self, file_path):
+        while True:
+
+            try:
+                with open(file_path, 'r') as file:
+                    reader = csv.reader(file)
+                    self.array = []
+                    for row in reader:
+                        self.array.extend(map(int, row))
+                    print(f"Array loaded successfully: {self.array}")
+                    return self.array
+            except Exception as e:
+                print(f"Error loading file: {e}")
     def sort_array(self, comparison_mode, algorithm_name_1, algorithm_name_2=None):
         """Sorts the array based on the comparison mode and selected algorithms."""
         if not self.array:

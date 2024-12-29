@@ -1,9 +1,12 @@
+import time
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from controller import Controller
 import sorting_algorithms
 import random
+from graphGUI import *
 class InputUI:
+
     def __init__(self, root):
         self.root = root
         self.root.title("Input Handler UI")
@@ -66,11 +69,11 @@ class InputUI:
         size_label.grid(row=0, column=0, padx=5, pady=5)
 
         self.size_var = tk.IntVar(value=10)
-        size_slider = tk.Scale(self.array_frame, from_=3, to=20000, orient=tk.HORIZONTAL, variable=self.size_var, command=self.update_size_entry)
+        size_slider = tk.Scale(self.array_frame, from_=20, to=500, orient=tk.HORIZONTAL, variable=self.size_var, command=self.update_size_entry)
         size_slider.grid(row=0, column=1, padx=5, pady=5)
 
         self.size_entry = tk.Entry(self.array_frame, width=10)
-        self.size_entry.insert(0, "10")
+        self.size_entry.insert(0, "20")
         self.size_entry.grid(row=0, column=2, padx=5, pady=5)
 
         ok_button = tk.Button(self.array_frame, text="OK", command=self.update_size_slider)
@@ -163,15 +166,15 @@ class InputUI:
     def update_size_slider(self):
         try:
             size = int(self.size_entry.get())
-            if 3 <= size <= 20000:
+            if 20 <= size <= 500:
                 self.size_var.set(size)
             else:
-                messagebox.showerror("Error", "Size must be between 3 and 20000.")
+                messagebox.showerror("Error", "Size must be between 20 and 500.")
         except ValueError:
             messagebox.showerror("Error", "Invalid size. Please enter a valid number.")
 
     def ensure_different_algorithms(self, *args):
-        if self.sorting_var_1.get() == self.sorting_var_2.get():
+        if self.sorting_var_1.get() == self.sorting_var_2.get() and self.compare_mode_var.get() == "double":
             available_algorithms = [
                 "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort",
                 "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort",
@@ -181,6 +184,8 @@ class InputUI:
             available_algorithms.remove(self.sorting_var_1.get())
             self.sorting_var_2.set(available_algorithms[0])
             messagebox.showwarning("Warning", "Algorithms cannot be the same.")
+
+
 
     def run(self):
         input_handler = Controller()
@@ -193,6 +198,8 @@ class InputUI:
             file_path = self.csv_path_entry.get()
             try:
                 self.array = input_handler.load_csv(file_path)
+
+
                 messagebox.showinfo("Success", f"Array loaded successfully: {self.array}")
             except ValueError as ve:
                 messagebox.showerror("Error", str(ve))
@@ -205,98 +212,125 @@ class InputUI:
 
             try:
                 self.array = input_handler.generate_array(size, shuffle_type, input_type)
+                print(self.array)
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to generate array: {e}")
 
         if self.compare_mode_var.get() == "single":
             self.sorting_algorithm_1 = self.sorting_var_1.get()
-            sizes, steps_selected, steps_worst = self.perform_single_comparison()
-            self.show_graph_gui_single(sizes, steps_selected, steps_worst)
+            sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best = self.perform_single_comparison()
+            self.show_graph_gui_single(sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best)
         elif self.compare_mode_var.get() == "double":
             self.sorting_algorithm_1 = self.sorting_var_1.get()
             self.sorting_algorithm_2 = self.sorting_var_2.get()
-            sizes1, steps1, sizes2, steps2 = self.perform_algorithm_comparison()
-            self.show_graph_gui(sizes1, steps1, sizes2, steps2)
+            sizes1, steps1, sizes2, steps2, times1, times2 = self.perform_algorithm_comparison()
+            self.show_graph_gui(sizes1, steps1, sizes2, steps2, times1, times2)
 
     def perform_single_comparison(self):
         sizes = []
         steps_selected = []
         steps_worst = []
+        steps_best = []
+        times1 = []
+        times_worst = []
+        times_best = []
         input_handler = Controller()
         shuffle_type = self.shuffle_var.get()
         input_type = self.input_type_var.get()
 
-        for i in range(10, self.size_var.get() + 1, 5):
+
+        for i in range(10, len(self.array) + 1, 3):
             # Selected shuffle type
             sizes.append(i)
             temp_array = self.array[0:i]
+            start_time = time.perf_counter()
             sorting_algorithms.SortingAlgorithms.step_counter = 0
             getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(temp_array)
+            end_time = time.perf_counter()
             steps_selected.append(sorting_algorithms.SortingAlgorithms.step_counter)
+            times1.append(end_time - start_time)
 
             # Worst-case scenario (reverse sorted array)
             worst_array = list(range(i, 0, -1))
+            start_time = time.perf_counter()
             sorting_algorithms.SortingAlgorithms.step_counter = 0
             getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(worst_array)
             steps_worst.append(sorting_algorithms.SortingAlgorithms.step_counter)
+            end_time = time.perf_counter()
+            times_worst.append(end_time - start_time)
 
-        return sizes, steps_selected, steps_worst
+            # Best-case scenario (already sorted array)
+            best_array = list(range(i))
+            start_time = time.perf_counter()
+            sorting_algorithms.SortingAlgorithms.step_counter = 0
+            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(best_array)
+            steps_best.append(sorting_algorithms.SortingAlgorithms.step_counter)
+            end_time = time.perf_counter()
+            times_best.append(end_time - start_time)
+
+        return sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best
 
     def perform_algorithm_comparison(self):
-        sizes1, steps1 = [], []
-        sizes2, steps2 = [], []
+        sizes1, steps1, times1 = [], [], []
+        sizes2, steps2, times2 = [], [], []
         input_handler = Controller()
-        shuffle_type = self.shuffle_var.get()
-        input_type = self.input_type_var.get()
 
-        for i in range(10, self.size_var.get() + 1, 5):
+        for i in range(10, len(self.array) + 1, 3):
             # Algorithm 1
             sizes1.append(i)
             temp_array = self.array[0:i]
+
+            start_time = time.perf_counter()
             sorting_algorithms.SortingAlgorithms.step_counter = 0
             getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(temp_array)
             steps1.append(sorting_algorithms.SortingAlgorithms.step_counter)
+            end_time = time.perf_counter()
+            times1.append(end_time - start_time)
 
             # Algorithm 2
             sizes2.append(i)
             temp_array = self.array[0:i]
+            start_time = time.perf_counter()
             sorting_algorithms.SortingAlgorithms.step_counter = 0
             getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_2.lower().replace(" ", "_"))(temp_array)
             steps2.append(sorting_algorithms.SortingAlgorithms.step_counter)
+            end_time = time.perf_counter()
+            times2.append(end_time - start_time)
 
-        return sizes1, steps1, sizes2, steps2
+        return sizes1, steps1, sizes2, steps2, times1, times2
 
-    def show_graph_gui(self, sizes1, steps1, sizes2, steps2):
-        # Save the graph using graphDesigner
-        import graphDesigner  # Ensure graphDesigner.py is in the same directory or correctly referenced
-        graphDesigner.plot_steps_comparison(sizes1, steps1, sizes2, steps2,
-                                            label1=self.sorting_algorithm_1,
-                                            label2=self.sorting_algorithm_2)
+    def show_graph_gui(self, sizes1, steps1, sizes2, steps2, times1, times2):
+        # Steps graph
+        new_window_steps = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_steps, sizes1, steps1, sizes2, steps2,
+                            label1=f"{self.sorting_algorithm_1} Steps",
+                            label2=f"{self.sorting_algorithm_2} Steps",
+                            graph_title="Comparison of Steps Taken")
 
-        # Display the graph in a new window using graphGUI
-        import graphGUI  # Ensure graphGUI.py is in the same directory or correctly referenced
-        new_window = tk.Toplevel(self.root)
-        graphGUI.GraphPlaceholderApp(new_window, sizes1, steps1, sizes2, steps2,
-                                     label1=self.sorting_algorithm_1,
-                                     label2=self.sorting_algorithm_2)
+        # Time graph
+        new_window_time = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_time, sizes1, times1, sizes2, times2,
+                            label1=f"{self.sorting_algorithm_1} Time",
+                            label2=f"{self.sorting_algorithm_2} Time",
+                            graph_title="Comparison of Time Taken")
 
-    def show_graph_gui_single(self, sizes, steps_selected, steps_worst):
-        # Save the graph using graphDesigner
-        import graphDesigner  # Ensure graphDesigner.py is in the same directory or correctly referenced
-        graphDesigner.plot_steps_comparison(
-            sizes, steps_selected, sizes, steps_worst,
-            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
-            label2=f"{self.sorting_algorithm_1} (reverse order)"
-        )
+    def show_graph_gui_single(self, sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best):
+        # Steps graph
+        new_window_steps = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_steps, sizes, steps_selected, sizes, steps_worst, sizes, steps_best,
+                            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Steps",
+                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Steps",
+                            label3=f"{self.sorting_algorithm_1} (sorted) Steps",
+                            graph_title="Comparison of Steps Taken (Single)")
 
-        # Display the graph in a new window using graphGUI
-        import graphGUI  # Ensure graphGUI.py is in the same directory or correctly referenced
-        new_window = tk.Toplevel(self.root)
-        graphGUI.GraphPlaceholderApp(
-            new_window, sizes, steps_selected, sizes, steps_worst,
-            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()})",
-            label2=f"{self.sorting_algorithm_1} (reverse order)"
-        )
+        # Time graph
+        new_window_time = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_time, sizes, times1, sizes, times_worst, sizes, times_best,
+                            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Time",
+                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Time",
+                            label3=f"{self.sorting_algorithm_1} (sorted) Time",
+                            graph_title="Comparison of Time Taken (Single)")
+
 
 
     def show_page(self, page_index):
@@ -305,3 +339,9 @@ class InputUI:
                 page.pack(fill="both", expand=True)
             else:
                 page.pack_forget()
+
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = InputUI(root)
+    root.mainloop()

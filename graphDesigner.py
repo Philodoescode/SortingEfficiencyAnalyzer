@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def plot_steps_comparison(x1, y1, x2, y2, label1, label2):
+def plot_steps_comparison(x1, y1, x2, y2, label1, label2, type):
 
     plt.figure(figsize=(10, 6))
 
@@ -11,9 +11,9 @@ def plot_steps_comparison(x1, y1, x2, y2, label1, label2):
     plt.plot(x2, y2, label=label2, marker='s')
 
     # Add titles and labels
-    plt.title("Comparison of Steps Taken by Sorting Algorithms", fontsize=16)
+    plt.title(f"Comparison of {type} Taken by Sorting Algorithms", fontsize=16)
     plt.xlabel("Input Size", fontsize=14)
-    plt.ylabel("Steps Taken", fontsize=14)
+    plt.ylabel(f"{type} Taken", fontsize=14)
 
     # Add legend and grid
     plt.legend(fontsize=12)
@@ -22,6 +22,34 @@ def plot_steps_comparison(x1, y1, x2, y2, label1, label2):
     plt.tight_layout()
     plt.savefig("comparison.png")
     print(f"Graph saved to comparison.png")
+
+
+def plot_asymptotic_comparison(x1, y1, x2, y2, x3, y3, label1, label2, label3, type):
+
+    plt.figure(figsize=(10, 6))
+
+    # Plot the first dataset
+    plt.plot(x1, y1, label=label1, marker='o')
+
+    # Plot the second dataset
+    plt.plot(x2, y2, label=label2, marker='s')
+
+    plt.plot(x3, y3, label=label3, marker='r')
+
+    # Add titles and labels
+    plt.title(f"Comparison of {type} Taken by Sorting Algorithms", fontsize=16)
+    plt.xlabel("Input Size", fontsize=14)
+    plt.ylabel(f"{type} Taken", fontsize=14)
+
+    # Add legend and grid
+    plt.legend(fontsize=12)
+    plt.grid(True, linestyle='--', alpha=0.7)
+
+    plt.tight_layout()
+    plt.savefig("comparison.png")
+    print(f"Graph saved to asymptotic.png")
+
+
 
 # Example usage
 if __name__ == "__main__":
