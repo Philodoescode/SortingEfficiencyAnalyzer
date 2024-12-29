@@ -300,12 +300,6 @@ class InputUI:
         return sizes1, steps1, sizes2, steps2, times1, times2
 
     def show_graph_gui(self, sizes1, steps1, sizes2, steps2, times1, times2):
-        # Steps graph
-        new_window_steps = tk.Toplevel(self.root)
-        GraphPlaceholderApp(new_window_steps, sizes1, steps1, sizes2, steps2,
-                            label1=f"{self.sorting_algorithm_1} Steps",
-                            label2=f"{self.sorting_algorithm_2} Steps",
-                            graph_title="Comparison of Steps Taken")
 
         # Time graph
         new_window_time = tk.Toplevel(self.root)
@@ -313,15 +307,17 @@ class InputUI:
                             label1=f"{self.sorting_algorithm_1} Time",
                             label2=f"{self.sorting_algorithm_2} Time",
                             graph_title="Comparison of Time Taken")
+        # Steps graph
+        new_window_steps = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_steps, sizes1, steps1, sizes2, steps2,
+                            label1=f"{self.sorting_algorithm_1} Steps",
+                            label2=f"{self.sorting_algorithm_2} Steps",
+                            graph_title="Comparison of Steps Taken")
+
 
     def show_graph_gui_single(self, sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best):
         # Steps graph
-        new_window_steps = tk.Toplevel(self.root)
-        GraphPlaceholderApp(new_window_steps, sizes, steps_selected, sizes, steps_worst, sizes, steps_best,
-                            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Steps",
-                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Steps",
-                            label3=f"{self.sorting_algorithm_1} (sorted) Steps",
-                            graph_title="Comparison of Steps Taken (Single)")
+
 
         # Time graph
         new_window_time = tk.Toplevel(self.root)
@@ -331,6 +327,12 @@ class InputUI:
                             label3=f"{self.sorting_algorithm_1} (sorted) Time",
                             graph_title="Comparison of Time Taken (Single)")
 
+        new_window_steps = tk.Toplevel(self.root)
+        GraphPlaceholderApp(new_window_steps, sizes, steps_selected, sizes, steps_worst, sizes, steps_best,
+                            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Steps",
+                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Steps",
+                            label3=f"{self.sorting_algorithm_1} (sorted) Steps",
+                            graph_title="Comparison of Steps Taken (Single)")
 
 
     def show_page(self, page_index):
