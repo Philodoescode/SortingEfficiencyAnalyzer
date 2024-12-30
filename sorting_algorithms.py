@@ -152,6 +152,191 @@ class SortingAlgorithms:
             heapify(i, 0)
 
     # Add similar counter logic to remaining algorithms as needed.
+    @staticmethod
+    def gnome_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        index = 0
+        while index < len(arr):
+            SortingAlgorithms.step_counter += 1  # For each loop iteration
+            if index == 0 or arr[index] >= arr[index - 1]:
+                index += 1
+            else:
+                arr[index], arr[index - 1] = arr[index - 1], arr[index]
+                SortingAlgorithms.step_counter += 3  # For swap
+                index -= 1
+
+    @staticmethod
+    def odd_even_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        is_sorted = False
+        while not is_sorted:
+            is_sorted = True
+            for i in range(1, len(arr) - 1, 2):
+                SortingAlgorithms.step_counter += 1  # For each comparison
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                    SortingAlgorithms.step_counter += 3  # For swap
+                    is_sorted = False
+
+            for i in range(0, len(arr) - 1, 2):
+                SortingAlgorithms.step_counter += 1  # For each comparison
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                    SortingAlgorithms.step_counter += 3  # For swap
+                    is_sorted = False
+
+    @staticmethod
+    def bubble_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        n = len(arr)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                SortingAlgorithms.step_counter += 1  # For each comparison
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                    SortingAlgorithms.step_counter += 3  # For swap
+
+    @staticmethod
+    def cocktail_shaker_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        n = len(arr)
+        start = 0
+        end = n - 1
+        swapped = True
+        while swapped:
+            swapped = False
+            for i in range(start, end):
+                SortingAlgorithms.step_counter += 1  # For each comparison
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                    SortingAlgorithms.step_counter += 3  # For swap
+                    swapped = True
+
+            if not swapped:
+                break
+
+            swapped = False
+            end -= 1
+
+            for i in range(end - 1, start - 1, -1):
+                SortingAlgorithms.step_counter += 1  # For each comparison
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                    SortingAlgorithms.step_counter += 3  # For swap
+                    swapped = True
+
+            start += 1
+
+    @staticmethod
+    def counting_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        max_val = max(arr)
+        min_val = min(arr)
+        range_of_elements = max_val - min_val + 1
+        count = [0] * range_of_elements
+        output = [0] * len(arr)
+
+        for i in arr:
+            count[i - min_val] += 1
+            SortingAlgorithms.step_counter += 1  # For counting
+
+        for i in range(1, len(count)):
+            count[i] += count[i - 1]
+            SortingAlgorithms.step_counter += 1  # For cumulative sum
+
+        for i in range(len(arr) - 1, -1, -1):
+            output[count[arr[i] - min_val] - 1] = arr[i]
+            count[arr[i] - min_val] -= 1
+            SortingAlgorithms.step_counter += 2  # For placement
+
+        for i in range(len(arr)):
+            arr[i] = output[i]
+            SortingAlgorithms.step_counter += 1  # For copying to original array
+
+    @staticmethod
+    def bucket_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        if len(arr) == 0:
+            return
+
+        bucket_count = len(arr)
+        max_val = max(arr)
+        buckets = [[] for _ in range(bucket_count)]
+
+        for i in arr:
+            index = int(i / max_val * (bucket_count - 1))
+            buckets[index].append(i)
+            SortingAlgorithms.step_counter += 1  # For bucket assignment
+
+        k = 0
+        for bucket in buckets:
+            bucket.sort()  # Using Python's built-in sort for simplicity
+            for val in bucket:
+                arr[k] = val
+                k += 1
+                SortingAlgorithms.step_counter += 1  # For placement
+
+    @staticmethod
+    def radix_sort(arr):
+        SortingAlgorithms.step_counter = 0  # Reset counter
+
+        def counting_sort(exp):
+            n = len(arr)
+            output = [0] * n
+            count = [0] * 10
+
+            for i in range(n):
+                index = (arr[i] // exp) % 10
+                count[index] += 1
+                SortingAlgorithms.step_counter += 1  # For counting
+
+            for i in range(1, 10):
+                count[i] += count[i - 1]
+                SortingAlgorithms.step_counter += 1  # For cumulative sum
+
+            i = n - 1
+            while i >= 0:
+                index = (arr[i] // exp) % 10
+                output[count[index] - 1] = arr[i]
+                count[index] -= 1
+                SortingAlgorithms.step_counter += 2  # For placement
+                i -= 1
+
+            for i in range(n):
+                arr[i] = output[i]
+                SortingAlgorithms.step_counter += 1  # For copying to original array
+
+        max_val = max(arr)
+        exp = 1
+        while max_val // exp > 0:
+            counting_sort(exp)
+            exp *= 10
+
+    @staticmethod
+    def gravity_sort(arr):  # Bead Sort
+        SortingAlgorithms.step_counter = 0  # Reset counter
+        max_val = max(arr)
+        beads = [0] * (len(arr) * max_val)
+
+        for i, num in enumerate(arr):
+            for j in range(num):
+                beads[i * max_val + j] = 1
+                SortingAlgorithms.step_counter += 1  # For placing beads
+
+        for j in range(max_val):
+            sum_ = 0
+            for i in range(len(arr)):
+                sum_ += beads[i * max_val + j]
+                beads[i * max_val + j] = 0
+                SortingAlgorithms.step_counter += 1  # For gravity simulation
+
+            for i in range(len(arr) - 1, len(arr) - sum_ - 1, -1):
+                beads[i * max_val + j] = 1
+                SortingAlgorithms.step_counter += 1  # For bead placement
+
+        for i in range(len(arr)):
+            arr[i] = sum(beads[i * max_val:(i + 1) * max_val])
+            SortingAlgorithms.step_counter += 1  # For copying to original array
 
 # Example usage:
 if __name__ == "__main__":

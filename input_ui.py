@@ -120,7 +120,7 @@ class InputUI:
             "Quick Sort", "Merge Sort", "Shell Sort", "Selection Sort",
             "Insertion Sort", "Heap Sort", "Gnome Sort", "Odd-Even Sort",
             "Bubble Sort", "Cocktail Shaker Sort", "Counting Sort",
-            "Bucket Sort", "Radix Sort", "Gravity Sort (Bead Sort)"
+            "Bucket Sort", "Radix Sort", "Gravity Sort"
         ]
 
         sorting_label_1 = tk.Label(frame, text="Algorithm 1:")

@@ -22,21 +22,38 @@ class Controller:
 
     def generate_array(self, size, shuffle_type, input_type):
         """Generates an array based on input specifications."""
-        if input_type == "Contiguous values":
-            array = list(range(1, size + 1))
-        elif input_type == "Non-contiguous values":
-            array = [random.randint(1, size * 2) for _ in range(size)]
 
-        if shuffle_type == "Reverse sorted":
-            array.sort(reverse=True)
-        elif shuffle_type == "Semi-sorted":
-            split_point = size // 2
-            array[:split_point] = sorted(array[:split_point])
-            array[split_point:] = array[split_point:][::-1]
-        elif shuffle_type == "Fully-sorted":
-            array.sort()
-        elif shuffle_type == "Randomized":
-            random.shuffle(array)
+        if input_type == "Contiguous values":
+            if shuffle_type == "Reverse sorted":
+                array = list(range(size,0 ,-1))
+            elif shuffle_type == "Fully-sorted":
+                array = list(range(size+1))
+            elif shuffle_type == "Randomized":
+                array = [random.randint(0,size) for _ in range(size + 1)]
+            elif shuffle_type == "Semi-sorted":
+                split_point = size // 2
+                array = list(range(size))
+                array[split_point:] = [random.randint(0,size) for _ in range(split_point)]
+            else:
+                array = [random.randint(0,size) for _ in range(size)]
+        elif input_type == "Non-contiguous values":
+            if shuffle_type == "Reverse sorted":
+                array = [i*2 for i in reversed(range(size))]
+            elif shuffle_type == "Fully-sorted":
+                array = [i *2 for i in range(size)]
+            elif shuffle_type == "Randomized":
+                array = [random.randint(0,size * 2)  for _ in range(size )]
+            elif shuffle_type == "Semi-sorted":
+                split_point = size // 2
+                first_half = [i * 2 for i in range(split_point)]
+                second_half = [random.randint(0, size * 2) for _ in range(split_point)]
+                array = first_half + second_half
+
+            else:
+                array = [random.randint(0,size * 2) for _ in range(size)]
+        else:
+            array = [random.randint(0,size) for _ in range(size)]
+
 
         self.array = array
         return array
