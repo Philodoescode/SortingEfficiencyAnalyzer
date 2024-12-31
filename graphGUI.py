@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import Frame
 
 class GraphPlaceholderApp:
-    def __init__(self, master, x1, y1, x2, y2, x3=None, y3=None, label1=None, label2=None, label3=None, graph_title="Graph"):
+    def __init__(self, master, x1, y1, x2, y2, x3=None, y3=None, label1=None, label2=None, label3=None, graph_title="Graph", type= None):
         self.master = master
         self.master.title("Graph Display")
         self.master.configure(bg="#87CEEB")  # Sky blue
@@ -25,11 +25,15 @@ class GraphPlaceholderApp:
         fig = Figure(figsize=(8, 6), dpi=100)
         ax = fig.add_subplot(111)
 
+
         # Plot the data
-        ax.plot(x1, y1, label=label1, marker='o')
-        ax.plot(x2, y2, label=label2, marker='s')
+        ax.plot(x1, y1, label=label1, marker='o', linestyle='-')
+        if type is not None:
+            ax.plot(x2, y2, label=label2, marker='s', linestyle='--')
+        else:
+            ax.plot(x3, y3, label=label3, marker='o', linestyle='-')
         if x3 is not None and y3 is not None:
-            ax.plot(x3, y3, label=label3, marker='^')
+            ax.plot(x3, y3, label=label3, marker='^', linestyle=':')
 
         # Add titles and labels
         ax.set_title(graph_title, fontsize=16)
@@ -43,6 +47,13 @@ class GraphPlaceholderApp:
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(fill=tk.BOTH, expand=True)
         canvas.draw()
+
+
+    import numpy as np
+
+
+
+
 
 def plot_steps_comparison(x1, y1, x2, y2, x3, y3, label1, label2, label3, type):
     plt.figure(figsize=(10, 6))

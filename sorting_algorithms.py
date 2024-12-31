@@ -338,6 +338,85 @@ class SortingAlgorithms:
             arr[i] = sum(beads[i * max_val:(i + 1) * max_val])
             SortingAlgorithms.step_counter += 1  # For copying to original array
 
+
+import math
+
+class AsymptoticNotations:
+    """
+    A class to calculate and return the asymptotic notations for different sorting algorithms.
+    """
+
+    @staticmethod
+    def insertion_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def selection_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def bubble_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def cocktail_shaker_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def gnome_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def odd_even_sort(n):
+        # Time complexity: O(n^2)
+        return n ** 2
+
+    @staticmethod
+    def quick_sort(n):
+        # Average case: O(n log n), Worst case: O(n^2)
+        return n * math.log2(n)
+
+    @staticmethod
+    def merge_sort(n):
+        # Time complexity: O(n log n)
+        return n * math.log2(n)
+
+    @staticmethod
+    def heap_sort(n):
+        # Time complexity: O(n log n)
+        return n * math.log2(n)
+
+    @staticmethod
+    def shell_sort(n):
+        # Time complexity: Depends on gap sequence, average case is O(n^(3/2)) for common sequences.
+        return n ** (3/2)
+
+    @staticmethod
+    def counting_sort(n):
+        # Time complexity: O(n + k), where k is the range of input values. Assuming k = n for simplicity.
+        return n + n
+
+    @staticmethod
+    def bucket_sort(n):
+        # Time complexity: O(n + k), assuming k = n for simplicity.
+        return n + n
+
+    @staticmethod
+    def radix_sort(n):
+        # Time complexity: O(d * (n + b)), where d is the number of digits and b is the base. Assuming b = 10 and d = log10(n).
+        d = math.log10(n)  # Number of digits
+        return d * (n + 10)
+
+    @staticmethod
+    def gravity_sort(n):
+        # Time complexity: O(n * max_value). Assuming max_value = n for simplicity.
+        return n * n
+
 # Example usage:
 if __name__ == "__main__":
     arr = [5, 2, 9, 1, 5, 6,5,5,5,5,5,5,8,8,8,8,8,8,8,15,47,5,1,3,78,100,58]

@@ -218,8 +218,8 @@ class InputUI:
 
         if self.compare_mode_var.get() == "single":
             self.sorting_algorithm_1 = self.sorting_var_1.get()
-            sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best = self.perform_single_comparison()
-            self.show_graph_gui_single(sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best)
+            sizes, steps_selected, steps_asymptotic = self.perform_single_comparison()
+            self.show_graph_gui_single(sizes, steps_selected, steps_asymptotic)
         elif self.compare_mode_var.get() == "double":
             self.sorting_algorithm_1 = self.sorting_var_1.get()
             self.sorting_algorithm_2 = self.sorting_var_2.get()
@@ -229,11 +229,11 @@ class InputUI:
     def perform_single_comparison(self):
         sizes = []
         steps_selected = []
-        steps_worst = []
-        steps_best = []
-        times1 = []
-        times_worst = []
-        times_best = []
+        steps_asymptotic = []
+
+
+
+
         input_handler = Controller()
         shuffle_type = self.shuffle_var.get()
         input_type = self.input_type_var.get()
@@ -243,32 +243,16 @@ class InputUI:
             # Selected shuffle type
             sizes.append(i)
             temp_array = self.array[0:i]
-            start_time = time.perf_counter()
+
             sorting_algorithms.SortingAlgorithms.step_counter = 0
             getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(temp_array)
-            end_time = time.perf_counter()
+            steps_asymptotic.append(getattr(sorting_algorithms.AsymptoticNotations, self.sorting_algorithm_1.lower().replace(" ", "_"))(i))
             steps_selected.append(sorting_algorithms.SortingAlgorithms.step_counter)
-            times1.append(end_time - start_time)
 
-            # Worst-case scenario (reverse sorted array)
-            worst_array = list(range(i, 0, -1))
-            start_time = time.perf_counter()
-            sorting_algorithms.SortingAlgorithms.step_counter = 0
-            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(worst_array)
-            steps_worst.append(sorting_algorithms.SortingAlgorithms.step_counter)
-            end_time = time.perf_counter()
-            times_worst.append(end_time - start_time)
 
-            # Best-case scenario (already sorted array)
-            best_array = list(range(i))
-            start_time = time.perf_counter()
-            sorting_algorithms.SortingAlgorithms.step_counter = 0
-            getattr(sorting_algorithms.SortingAlgorithms, self.sorting_algorithm_1.lower().replace(" ", "_"))(best_array)
-            steps_best.append(sorting_algorithms.SortingAlgorithms.step_counter)
-            end_time = time.perf_counter()
-            times_best.append(end_time - start_time)
 
-        return sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best
+
+        return sizes, steps_selected, steps_asymptotic
 
     def perform_algorithm_comparison(self):
         sizes1, steps1, times1 = [], [], []
@@ -315,24 +299,15 @@ class InputUI:
                             graph_title="Comparison of Steps Taken")
 
 
-    def show_graph_gui_single(self, sizes, steps_selected, steps_worst, steps_best, times1, times_worst, times_best):
+    def show_graph_gui_single(self, sizes, steps_selected, steps_asymptotic):
         # Steps graph
 
-
-        # Time graph
-        new_window_time = tk.Toplevel(self.root)
-        GraphPlaceholderApp(new_window_time, sizes, times1, sizes, times_worst, sizes, times_best,
-                            label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Time",
-                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Time",
-                            label3=f"{self.sorting_algorithm_1} (sorted) Time",
-                            graph_title="Comparison of Time Taken (Single)")
-
         new_window_steps = tk.Toplevel(self.root)
-        GraphPlaceholderApp(new_window_steps, sizes, steps_selected, sizes, steps_worst, sizes, steps_best,
+        GraphPlaceholderApp(master=new_window_steps,x1= sizes,y1= steps_selected,x2= sizes,y2= steps_asymptotic,
                             label1=f"{self.sorting_algorithm_1} ({self.shuffle_var.get()}) Steps",
-                            label2=f"{self.sorting_algorithm_1} (reverse sorted) Steps",
-                            label3=f"{self.sorting_algorithm_1} (sorted) Steps",
-                            graph_title="Comparison of Steps Taken (Single)")
+                            label2=f"{self.sorting_algorithm_1} asymptotic Steps",
+                            type="single",
+                            graph_title="Algorithm versus asymptotic notation")
 
 
     def show_page(self, page_index):
